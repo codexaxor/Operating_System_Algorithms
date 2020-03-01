@@ -1,0 +1,144 @@
+//?????? ??????? ???????????? ??????????
+
+#include <bits/stdc++.h>
+#define fst                       \
+    ios_base::sync_with_stdio(0); \
+    ios::sync_with_stdio(0);      \
+    cin.tie(0);                   \
+    cout.tie(0);
+#define PI acos(-1.0)
+#define rd freopen("io/ip.txt", "r", stdin)
+#define wr freopen("io/op.txt", "w", stdout)
+#define wis(x) cout << #x << " ----> " << x << endl;
+#define mem(array, int) memset(array, int, sizeof(array))
+#define ll long long int
+#define nl cout << endl;
+#define MX 10000009
+#define MOD 1000000007
+using namespace std;
+
+
+
+/// ROUND ROBIN ALGORITHM  {path printing}
+
+
+
+
+struct process
+{
+	int pid, at, bt;
+};
+
+bool cmpArrival(const process &a, const process &b)
+{
+	return a.at < b.at;
+}
+
+bool cmpPriority(const process &a, const process &b)
+{
+
+}
+
+int main() {
+
+	rd;
+
+	printf("Enter Process limit : ");
+
+	int pLimit;
+
+	cin >> pLimit;
+
+	process RR[pLimit];
+
+
+	int Burst[pLimit];
+	printf("\tArrival Cpu\n");
+	for (int i = 0; i < pLimit; ++i)
+	{
+		printf("process[%d] : ", i + 1 );
+		RR[i].pid = i + 1;
+		cin >> RR[i].at >> RR[i].bt;
+		Burst[i] = RR[i].bt;
+	}
+
+	int tq;
+
+	printf("Time Quantam : ");
+
+	cin >> tq;
+
+	sort(RR, RR + pLimit, cmpArrival);
+
+	queue<process>myQ;
+	myQ.push(RR[0]);
+	int flg = 1;
+	int timerLower = 0, timerUpper = 0;
+	int totalTime = 0;
+	double TT=0.0,WT=0.0;
+
+	printf("\nProcess ID\t Waiting Time\t Turnaround Time\n");
+
+	queue<int>PathPrint;
+
+	while (!myQ.empty())
+	{
+		process X = myQ.front();
+
+		//cout << X.pid << " ";
+
+		PathPrint.push(X.pid);
+
+		if ( Burst[X.pid - 1] <= tq && Burst[X.pid - 1] > 0 )
+		{
+			flg = 1;
+
+			totalTime += Burst[X.pid - 1];
+			Burst[X.pid - 1] = 0;
+		}
+		else if ( Burst[X.pid - 1] > 0 )
+		{
+			myQ.push(X);
+			Burst[X.pid - 1] -= tq;
+			totalTime += tq;
+		}
+
+
+		if (flg == 1 && Burst[X.pid - 1] == 0)
+		{
+			// cout<<RR[X.pid]<<"\t"<<totalTime - RR[X.pid].at-RR[X.pid].bt<<" "<<"\t"<<totalTime- RR[X.pid].at<<endl;
+
+			// WT += (totalTime - RR[X.pid].at-RR[X.pid].bt); 
+			// TT += (totalTime- RR[X.pid].at);
+
+			flg = 0;
+		}
+
+		timerUpper += X.bt;
+		myQ.pop();
+		for (int i = 1; i < pLimit; ++i)
+		{	
+			if ( timerLower <= RR[i].at && timerUpper >= RR[i].at)
+			{
+				myQ.push(RR[i]);
+			}
+		}
+		timerLower += X.bt;
+	}
+
+	printf("\nAverage Waiting Time: "); cout<<WT/pLimit<<endl;
+	printf("\nAvg Turnaround Time: "); cout<<TT/pLimit<<endl;
+
+	nl;nl;
+
+	while(!PathPrint.empty())
+	{
+		cout<<PathPrint.front()<<" ";
+		PathPrint.pop();
+	}
+	nl;
+
+
+
+	return 0;
+}
