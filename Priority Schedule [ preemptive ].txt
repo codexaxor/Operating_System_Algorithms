@@ -1,0 +1,92 @@
+#include <bits/stdc++.h>
+#define fst                       \
+    ios_base::sync_with_stdio(0); \
+    ios::sync_with_stdio(0);      \
+    cin.tie(0);                   \
+    cout.tie(0);
+#define PI acos(-1.0)
+#define rd freopen("io/ip.txt", "r", stdin)
+#define wr freopen("io/op.txt", "w", stdout)
+#define wis(x) cout << #x << " ----> " << x << endl;
+#define mem(array, int) memset(array, int, sizeof(array))
+#define ll long long int
+#define nl cout << endl;
+#define MX 10000009
+#define MOD 1000000007
+using namespace std;
+
+
+
+struct process
+{
+	int pid, at, bt, priority;
+};
+
+process PS[1009];
+
+
+
+bool cmp(const process &a, const process &b )
+{
+	if (a.priority == b.priority)
+	{
+		return a.at < b.at;
+	}
+	else
+		return a.priority < b.priority;
+}
+
+
+int main(int argc, char const *argv[])
+{
+
+	//rd;
+
+	int n;
+
+	printf("Enter process number\n");
+	cin >> n;
+	
+	for (int i = 0; i < n; ++i)
+	{
+		printf("Enter pid[%d] \narrival cpu priority\n",i+1);
+	 	PS[i].pid = i+1; 
+		cin>> PS[i].at >> PS[i].bt >> PS[i].priority;
+	}
+	sort(PS, PS + n, cmp);
+
+	int wt[n] = {0};
+	int tt[n] = {0};
+
+	wt[0] = 0;
+	int TotalWaiting = 0;
+	for (int i = 1; i < n; ++i)
+	{
+		wt[i] = PS[i - 1].bt + wt[i - 1];
+		TotalWaiting += wt[i];
+	}
+
+	int TotalTurn = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		tt[i] = wt[i] + PS[i].bt;
+		TotalTurn += tt[i];
+	}
+
+	printf("process\tarrival\tburst\tpriority\twaiting\tturn\n");
+	for (int i = 0; i < n; ++i)
+	{
+		cout << PS[i].pid << "\t" << PS[i].at << "\t" << PS[i].bt << "\t" << PS[i].priority << "\t\t" << wt[i] << "\t" << tt[i] << endl;
+	}
+
+
+	double avgW=0.0, avgT=0.0;
+
+	avgW = (double)TotalWaiting/n;
+	avgT = (double)TotalTurn/n;
+
+	printf("Average Watiting Time "); cout<<avgW<<endl;
+	printf("Average TurnAround Time "); cout<<avgT<<endl;
+
+	return 0;
+}
