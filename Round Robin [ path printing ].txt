@@ -34,10 +34,6 @@ bool cmpArrival(const process &a, const process &b)
 	return a.at < b.at;
 }
 
-bool cmpPriority(const process &a, const process &b)
-{
-
-}
 
 int main() {
 
@@ -106,11 +102,6 @@ int main() {
 
 		if (flg == 1 && Burst[X.pid - 1] == 0)
 		{
-			// cout<<RR[X.pid]<<"\t"<<totalTime - RR[X.pid].at-RR[X.pid].bt<<" "<<"\t"<<totalTime- RR[X.pid].at<<endl;
-
-			// WT += (totalTime - RR[X.pid].at-RR[X.pid].bt); 
-			// TT += (totalTime- RR[X.pid].at);
-
 			flg = 0;
 		}
 
