@@ -53,6 +53,7 @@ void DFS1(int n)
             cycle = true;
         }
     }
+    cout << n << " ";
     S.push(n);
 }
 
@@ -101,7 +102,7 @@ void DFS3(int n)
             cycle = true;
         }
     }
-    S.push(n);
+    cout << n << " ";
 }
 
 
@@ -112,19 +113,19 @@ int main()
     rd;
 
     int n, e;
-    
+
     printf("Enter number of Nodes & Edges\n");
-    
+
     cin >> n >> e;
-    
+
     int NodeList[n];
-    
+
     printf("Enter nodes : ");
     for (int i = 0; i < n; ++i)
     {
         cin >> NodeList[i];
     }
-    
+
     printf("Enter Edges : \n");
     for (int i = 0; i < e; ++i)
     {
@@ -142,7 +143,7 @@ int main()
         {
             DFS1(NodeList[i]);
         }
-    }
+    } nl; nl; nl;
 
     if (cycle)
     {
@@ -164,7 +165,7 @@ int main()
     }
 
 
-    /// DeadLock Remove 
+    /// DeadLock Remove
 
     memset(color, 0, sizeof(color));
 
@@ -176,7 +177,7 @@ int main()
         {
             DFS3(NodeList[i]);
         }
-    }
+    } nl; nl; nl;
 
     if (cycle)
     {
