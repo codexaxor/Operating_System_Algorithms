@@ -1,0 +1,205 @@
+#include "bits/stdc++.h"
+#define fst ios_base::sync_with_stdio(0); ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define PI acos(-1.0)
+#define rd freopen("ip.txt","r",stdin)
+#define wr freopen("op.txt", "w", stdout)
+#define wis(x) cout << #x << " is " << x << endl;
+#define mem(array,int) memset(array,int,sizeof(array))
+#define ll long long int
+#define ull unsigned long long int
+#define ff first
+#define ss second
+#define pb push_back
+#define mp make_pair
+#define sz size()
+#define nl cout<<endl;
+#define mx 2009
+#define MOD 1000000007
+#define pii pair<int,int>
+#define INF INFINITY
+using namespace std;
+
+
+const int node = 1000;
+
+vector<int> G[node];
+vector<int> RG[node];
+
+int color[node];
+int parent[node];
+
+bool cycle = false;
+
+stack<int>S;
+stack<int>store;
+
+void DFS1(int n)
+{
+
+    color[n] = 1;
+
+    for (int i = 0; i < G[n].size(); ++i)
+    {
+        int x = G[n][i];
+
+        if (color[x] == 0)
+        {
+            parent[x] = n;
+            DFS1(x);
+        }
+        else if (color[x] == 1 & parent[x] != n)
+        {
+            parent[x] = n;
+            cycle = true;
+        }
+    }
+    S.push(n);
+}
+
+bool head = false;
+int root = 0;
+
+void DFS2(int n)
+{
+    color[n] = 1;
+
+    for (int i = 0; i < RG[n].size(); ++i)
+    {
+        int x = RG[n][i];
+
+        if (color[x] == 0)
+        {
+            if (!head)
+            {
+                head = true;
+                cout << n << " ";
+            }
+            cout << x << " ";
+            DFS2(x);
+        }
+    }
+    cout << endl;
+    head = false;
+}
+
+
+void DFS3(int n)
+{
+
+    color[n] = 1;
+
+    for (int i = 0; i < G[n].size(); ++i)
+    {
+        int x = G[n][i];
+
+        if (color[x] == 0)
+        {
+            DFS3(x);
+        }
+        else if (color[x] == 1 & parent[x] != n)
+        {
+            cycle = true;
+        }
+    }
+    S.push(n);
+}
+
+
+
+int main()
+{
+
+    rd;
+
+    int n, e;
+    
+    printf("Enter number of Nodes & Edges\n");
+    
+    cin >> n >> e;
+    
+    int NodeList[n];
+    
+    printf("Enter nodes : ");
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> NodeList[i];
+    }
+    
+    printf("Enter Edges : \n");
+    for (int i = 0; i < e; ++i)
+    {
+        int u, v;
+        cin >> u >> v;
+        G[u].push_back(v);
+        RG[v].push_back(u);
+    }
+
+    memset(color, 0, sizeof(color));
+
+    for (int i = 0; i < n; ++i)
+    {
+        if (color[NodeList[i]] == 0)
+        {
+            DFS1(NodeList[i]);
+        }
+    }
+
+    if (cycle)
+    {
+        printf("DeadLock Detected!\n");
+    }
+    else if (!cycle) printf("No DeadLock\n");
+
+
+    memset(color, 0, sizeof(color));
+
+    while (!S.empty())
+    {
+        int x = S.top();
+        S.pop();
+        if (color[x] == 0)
+        {
+            DFS2(x);
+        }
+    }
+
+
+    /// DeadLock Remove 
+
+    memset(color, 0, sizeof(color));
+
+    cycle = false;
+
+    for (int i = 0; i < n; ++i)
+    {
+        if (color[NodeList[i]] == 0)
+        {
+            DFS3(NodeList[i]);
+        }
+    }
+
+    if (cycle)
+    {
+        printf("DeadLock Detected!\n");
+    }
+    else if (!cycle) printf("No DeadLock\n");
+
+    return 0;
+}
+
+
+
+/*
+
+7 8
+1 2 3 4 5 6 7
+1 2
+2 3
+3 1
+2 4
+4 5
+5 6
+6 7
+7 5
+
+*/
