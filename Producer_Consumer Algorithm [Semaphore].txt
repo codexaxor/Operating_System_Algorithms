@@ -1,0 +1,45 @@
+mutex mm;
+condition_variable cond;
+list<int> buffer;
+
+const int TotalBufferSize = 5;
+
+void Producer(int x)
+{
+	while (x)
+	{
+		unique_lock<mutex> locker(mm);   // wait() for mutex
+		cond.wait(locker, []() { return buffer.size() < TotalBufferSize; } ); // counting schema
+		buffer.push_back(x); // produce value
+		printf("produced :: %d\n", x); // print it
+		x--;
+		locker.unlock(); // signal() for mutex
+		cond.notify_one(); // ready for consumer
+	}
+}
+
+void Consumer()
+{
+	while (true)
+	{
+		unique_lock<mutex> locker(mm); // wait() for mutex
+		cond.wait(locker, []() { return buffer.size() > 0; } ); // counting schema
+		int x = buffer.back(); // consume product
+		buffer.pop_back();
+		printf("consumed :: %d\n", x); // print it
+		locker.unlock(); // signal() for mutex
+		cond.notify_one(); // ready for producer
+	}
+}
+
+
+int main(int argc, char const *argv[])
+{
+	thread t1(Producer, 120); // first thread
+	thread t2(Consumer); // second thread
+	// start thread Functions
+	t1.join();
+	t2.join();
+	return 0;
+}
+
