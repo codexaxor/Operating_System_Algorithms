@@ -1,0 +1,133 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+#define DISK_SIZE 200
+
+string fcfs_string, sstf_string, cscan_string;
+
+int fcfs(vector<int> request_queue, int head)
+{
+	int head_movement = 0;
+	fcfs_string += to_string(head) + " -> ";
+	for (int i = 0; i < request_queue.size(); i++)
+	{
+		head_movement = head_movement + abs(head - request_queue[i]);
+		head = request_queue[i];
+
+		fcfs_string += to_string(head);
+		if (i < request_queue.size() - 1) fcfs_string += " -> ";
+	}
+	return head_movement;
+}
+
+
+int sstf(vector<int> request_queue, int head)
+{
+	int min_distance = DISK_SIZE + 1, min_index = -1, head_movement = 0;
+
+	while (request_queue.size())
+	{
+		sstf_string += to_string(head);
+		if (request_queue.size() >= 1) sstf_string += " -> ";
+		// resetting values
+		min_distance = DISK_SIZE + 1;
+		min_index = -1;
+		for (int i = 0; i < request_queue.size(); i++)
+		{
+			if (abs(request_queue[i] - head) < min_distance)
+			{
+				min_index = i;
+				min_distance = abs(request_queue[i] - head);
+			}
+		}
+		head_movement += min_distance;
+		head = request_queue[min_index];
+		request_queue.erase(request_queue.begin() + min_index);
+	}
+	sstf_string += to_string(head);
+
+	return head_movement;
+}
+
+int c_scan(vector<int> request_queue, int head)
+{
+	int idx = 0, head_movement = 0;
+	sort(request_queue.begin(), request_queue.end());
+	while (request_queue[idx] < head)
+	{
+		idx++;
+	}
+	cscan_string += to_string(head);
+	for (int i = idx; i < request_queue.size(); i++) {
+		cscan_string += " -> ";
+		head_movement += abs(request_queue[i] - head);
+		head = request_queue[i];
+		cscan_string += to_string(head);
+	}
+	cscan_string += " -> ";
+	head_movement += (abs(DISK_SIZE - head)) - 1;
+	head = DISK_SIZE - 1;
+	cscan_string += to_string(head);
+	cscan_string += " -> ";
+
+	head_movement += abs(head - 0);
+	head = 0;
+
+	for (int i = 0; i < idx; i++) {
+		cscan_string += to_string(head) + " -> ";
+		head_movement += abs(request_queue[i] - head);
+		head = request_queue[i];
+	}
+	cscan_string += to_string(head);
+
+	return head_movement;
+}
+
+
+
+int main()
+{
+	rd;
+	int n, x, head_pos;
+	vector<int>CylinderRequests;
+	printf("Number of Requests : ");
+	scanf("%d", &n);
+	printf("\n");
+	printf("Cylinder Requests : ");
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &x);
+		CylinderRequests.push_back(x);
+	}
+	printf("\n");
+	printf("Current Head Position : ");
+	scanf("%d", &head_pos);
+	printf("Total Cylinder movement in FCFS :: %d\n", fcfs(CylinderRequests, head_pos));
+	cout << "FCFS # " << fcfs_string << endl; printf("\n");
+	printf("Total Cylinder movement in SSTF :: %d\n", sstf(CylinderRequests, head_pos));
+	cout << "SSTF # " << sstf_string << endl; printf("\n");
+	printf("Total Cylinder movement in CSCAN :: %d\n", c_scan(CylinderRequests, head_pos));
+	cout << "CSCAN # " << cscan_string  << endl;
+}
+
+
+/*
+
+=== input : 
+
+NO. of total Requests : 8
+Cylinder Requests : 176 79 34 60 92 11 41 114
+Current Head Position : 50
+
+=== output : 
+
+Total Cylinder movement in FCFS :: 510
+FCFS # 50 -> 176 -> 79 -> 34 -> 60 -> 92 -> 11 -> 41 -> 114
+
+Total Cylinder movement in SSTF :: 204
+SSTF # 50 -> 41 -> 34 -> 11 -> 60 -> 79 -> 92 -> 114 -> 176
+
+Total Cylinder movement in CSCAN :: 389
+CSCAN # 50 -> 60 -> 79 -> 92 -> 114 -> 176 -> 199 -> 0 -> 11 -> 34 -> 41
+
+*/
