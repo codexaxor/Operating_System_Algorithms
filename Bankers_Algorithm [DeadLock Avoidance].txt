@@ -1,7 +1,4 @@
 #include "bits/stdc++.h"
-#define rd freopen("ip.txt","r",stdin)
-#define wr freopen("op.txt", "w", stdout)
-#define wis(x) cout << #x << " ---> " << x << endl;
 using namespace std;
 
 struct BANK_ALGO
