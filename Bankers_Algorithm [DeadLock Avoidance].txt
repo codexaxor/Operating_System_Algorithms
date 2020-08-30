@@ -1,0 +1,66 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+struct BANK_ALGO
+{
+    int a1, b1, c1; //Allocation
+    int a2, b2, c2; //Max_Need
+    int a3, b3, c3; //Remaining_Need
+};
+int main()
+{
+    struct BANK_ALGO p[100];
+    int counter = 0, a, b, c, i, n;
+    int pro[11];
+    
+    cout << "Enter The Number of Total Process : ";
+    cin >> n;
+    
+    /// process in QUEUE
+    queue<int>processQueue;
+    for (i = 1; i <= n; ++i) processQueue.push(i);
+
+    /// input for available resource
+    cout << "Enter Available Resources A, B, C : ";
+    cin >> a >> b >> c;
+
+    for (i = 1; i <= n; i++)
+    {
+        cout << "Enter the Allocation p[" << i << "]  a1 , b1, c1 : ";
+        cin >> p[i].a1 >> p[i].b1 >> p[i].c1;
+        cout << "Enter the Max Need p[" << i << "]  a2, b2, c2 : ";
+        cin >> p[i].a2 >> p[i].b2 >> p[i].c2;
+        cout << "Enter the need of process p[" << i << "] a3, b3, c3\n";
+        /// Remaining Need 
+        p[i].a3 = p[i].a2 - p[i].a1;
+        p[i].b3 = p[i].b2 - p[i].b1;
+        p[i].c3 = p[i].c2 - p[i].c1;
+    }
+    
+    string SafeState;
+
+    // process will run
+
+    while (!processQueue.empty())
+    {
+        int CurrentProcess = processQueue.front();
+        processQueue.pop();
+        if (a >= p[CurrentProcess].a3 & b >= p[CurrentProcess].b3 & c >= p[CurrentProcess].c3)
+        {
+            SafeState += "P_" + to_string(CurrentProcess);
+            if (processQueue.size() != 0) SafeState += " -> ";
+            a += p[CurrentProcess].a1;
+            b += p[CurrentProcess].b1;
+            c += p[CurrentProcess].c1;
+        }
+        else
+            processQueue.push(CurrentProcess);
+        counter++;
+        if (counter > (n * 2)) break;
+    }
+
+    if (counter > (n * 2))
+        printf("System is in DeadLock!\n");
+    else
+        cout<<"SafeState_print : " << SafeState << endl;
+}
