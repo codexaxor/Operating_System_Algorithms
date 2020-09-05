@@ -147,7 +147,7 @@ int main(int argc, char const *argv[])
 }
 
 
-
+/*
 
   === INPUT
   
@@ -167,3 +167,5 @@ External Fragmentation = 181
  *** Best Fit Memory Allocation System *** 
 No External Fragmentation!
 
+
+*/
