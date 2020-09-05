@@ -1,0 +1,169 @@
+#include "bits/stdc++.h"
+#define rd freopen("ip.txt","r",stdin)
+#define wr freopen("op.txt", "w", stdout)
+#define wis(x) cout << #x << " ---> " << x << endl;
+using namespace std;
+
+
+
+
+int Best_Fit(int MemorySizes[], int n, int MemoryRequest[], int m)
+{
+    int CheckFragment = 0, Total_Fragment = 0;
+    bool flg = true;
+    sort(MemorySizes, MemorySizes + n);
+    // memoryRequest
+    for (int i = 0; i < m; ++i)
+    {
+        // memorySizes
+        for (int j = 0; j < n; ++j)
+        {
+            if (MemoryRequest[i] <= MemorySizes[j] && flg)
+            {
+                MemorySizes[j] -= MemoryRequest[i];
+                CheckFragment++;
+                break;
+            }
+            if (j == (n - 1)) flg = false;
+        }
+        sort(MemorySizes, MemorySizes + n);
+    }
+    if (CheckFragment == m) return 0;
+    else
+    {
+        for (int i = 0; i < n; ++i) Total_Fragment += MemorySizes[i];
+        return Total_Fragment;
+    }
+}
+
+int Worst_Fit(int MemorySizes[], int n, int MemoryRequest[], int m)
+{
+    int CheckFragment = 0, Total_Fragment = 0;
+    bool flg = true;
+    sort(MemorySizes, MemorySizes + n, greater<int>());
+    // memoryRequest
+    for (int i = 0; i < m; ++i)
+    {
+        // memorySizes
+        for (int j = 0; j < n; ++j)
+        {
+            if (MemoryRequest[i] <= MemorySizes[j] && flg)
+            {
+                MemorySizes[j] -= MemoryRequest[i];
+                CheckFragment++;
+                break;
+            }
+            if (j == (n - 1)) flg = false;
+        }
+        sort(MemorySizes, MemorySizes + n, greater<int>());
+    }
+    if (CheckFragment == m) return 0;
+    else
+    {
+        for (int i = 0; i < n; ++i) Total_Fragment += MemorySizes[i];
+        return Total_Fragment;
+    }
+}
+
+int First_Fit(int MemorySizes[], int n, int MemoryRequest[], int m)
+{
+    int CheckFragment = 0, Total_Fragment = 0;
+    bool flg = true;
+    // memoryRequest
+    for (int i = 0; i < m; ++i)
+    {
+        // memorySizes
+        for (int j = 0; j < n; ++j)
+        {
+            if (MemoryRequest[i] <= MemorySizes[j] && flg)
+            {
+                MemorySizes[j] -= MemoryRequest[i];
+                CheckFragment++;
+                break;
+            }
+            if (j == (n - 1)) flg = false;
+        }
+    }
+    if (CheckFragment == m) return 0;
+    else
+    {
+        for (int i = 0; i < n; ++i) Total_Fragment += MemorySizes[i];
+        return Total_Fragment;
+    }
+}
+
+int main(int argc, char const *argv[])
+{
+    rd;
+
+    int n, m;
+
+    //memory Block Size Input
+    printf("Enter The Number of Memory Blocks : ");
+    scanf("%d", &n);
+
+    int MemorySizes_1[n], MemorySizes_2[n], MemorySizes_3[n];
+    for (int i = 0; i < n; ++i)
+    {
+        printf("Size of Memory in %d Block : ", i + 1);
+        scanf("%d", &MemorySizes_1[i]);
+        MemorySizes_2[i] = MemorySizes_3[i] = MemorySizes_1[i];
+    }
+
+    //memoryRequest Input
+    printf("Enter The Number of Memory Requests : ");
+    scanf("%d", &m);
+
+    int MemoryRequest[m];
+    printf("Memory_Requests : \n");
+    for (int i = 0; i < m; ++i)
+    {
+        printf("%d no. Memory Request : ", i + 1);
+        scanf("%d", &MemoryRequest[i]);
+    } printf("\n");
+
+
+    // FirstFit
+    printf(" *** First Fit Memory Allocation System *** \n");
+    int x = First_Fit(MemorySizes_1, n, MemoryRequest, m);
+    if (!x) printf("No External Fragmentation!\n");
+    else printf("External Fragmentation = %d\n", x);
+
+
+    // WorstFit
+    printf(" *** Worst Fit Memory Allocation System *** \n");
+    int y = Worst_Fit(MemorySizes_2, n, MemoryRequest, m);
+    if (!y) printf("No External Fragmentation!\n");
+    else printf("External Fragmentation = %d\n", y);
+
+
+    // BestFit
+    printf(" *** Best Fit Memory Allocation System *** \n");
+    int z = Best_Fit(MemorySizes_3, n, MemoryRequest, m);
+    if (!z) printf("No External Fragmentation!\n");
+    else printf("External Fragmentation = %d\n", z);
+
+    return 0;
+}
+
+
+
+
+  === INPUT
+  
+No. of Memory Blocks :   5
+Memory Sizes :  50 200 70 115 15
+
+No. of Memory Requests :  10
+Memory Requests : 100 10 35 15 23 6 25 55 88 40  
+  
+  
+  === OUTPUT
+  
+ *** First Fit Memory Allocation System *** 
+External Fragmentation = 93
+ *** Worst Fit Memory Allocation System *** 
+External Fragmentation = 181
+ *** Best Fit Memory Allocation System *** 
+No External Fragmentation!
+
