@@ -1,11 +1,5 @@
 #include "bits/stdc++.h"
-#define rd freopen("ip.txt","r",stdin)
-#define wr freopen("op.txt", "w", stdout)
-#define wis(x) cout << #x << " ---> " << x << endl;
 using namespace std;
-
-
-
 
 int Best_Fit(int MemorySizes[], int n, int MemoryRequest[], int m)
 {
@@ -94,8 +88,6 @@ int First_Fit(int MemorySizes[], int n, int MemoryRequest[], int m)
 
 int main(int argc, char const *argv[])
 {
-    rd;
-
     int n, m;
 
     //memory Block Size Input
