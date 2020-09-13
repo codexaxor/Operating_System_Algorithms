@@ -1,0 +1,83 @@
+#include "bits/stdc++.h"
+#define rd freopen("ip.txt","r",stdin)
+#define wr freopen("op.txt", "w", stdout)
+#define wis(x) cout << #x << " ---> " << x << endl;
+using namespace std;
+
+
+void Non_Contiguous_File_Allocation(int n)
+{
+	int Block_Size = n;
+	int track[n];
+	memset(track, 0, sizeof(track)); 
+	int pivot = 0, choice;
+	multimap<char, int> Files;
+	while (1)
+	{
+		printf("\nInput File press 1\nSearch File press 2\nExit press 0\n");
+		cin >> choice;
+		if (choice == 1)
+		{
+			char fname;
+			int BlockSize;
+			printf("\nEnter FileName : ");
+			cin >> fname;
+			printf("\nEnter BlockSize : ");
+			cin >> BlockSize;
+			if (BlockSize <= Block_Size)
+			{
+				int i;
+				Block_Size -= BlockSize;
+
+				srand(time(0)); 
+  
+				for (i = 0; i < n; ++i)
+				{
+					int v = rand()%n;
+					if (track[v]==0)
+					{
+						Files.insert(make_pair(fname, v));
+						track[v] = 1;
+						BlockSize--;
+					}
+					if (BlockSize==0) break;
+				}
+				pivot = i;
+			}
+			else
+				printf("File %c cannot be created (not enough free blocks)\n", fname);
+
+		}
+		else if (choice == 2)
+		{
+			char fname;
+			printf("Search FileName : ");
+			cin >> fname;
+			if (Files.count(fname) == 0) {
+				printf("File Not Found\n");
+			} else {
+				printf("File Found in Blocks == ");
+				auto range = Files.equal_range(fname);
+				multimap<char, int>::iterator it;
+				for (it = range.first; it != range.second; ++it)
+				{
+					cout << it->second << " " ;
+				} printf("\n");
+			}
+		}
+		else if (choice == 0)
+		{
+			break;
+		}
+	}
+}
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	printf("Enter Total Number of Blocks : ");
+	scanf("%d", &n);
+	Non_Contiguous_File_Allocation(n);
+
+	return 0;
+}
