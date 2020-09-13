@@ -1,0 +1,107 @@
+#include "bits/stdc++.h"
+using namespace std;
+
+multimap<char, int> Contiguous, NonContiguous;
+
+int n, pivot = 0;
+int track[100000];
+
+void Print_Func(char fname)
+{
+	printf(" == [Contigeous] Blocks == \n");
+	auto range1 = Contiguous.equal_range(fname);
+	multimap<char, int>::iterator it1;
+	for (it1 = range1.first; it1 != range1.second; ++it1)
+	{
+		cout << it1->second << "\t" ;
+	} printf("\n");
+
+	printf(" == [Non-Contigeous] Blocks == \n");
+	auto range2 = NonContiguous.equal_range(fname);
+	multimap<char, int>::iterator it2;
+	for (it2 = range2.first; it2 != range2.second; ++it2)
+	{
+		cout << it2->second << "\t" ;
+	} printf("\n");
+}
+
+void Contiguous_File_Allocation(char fname, int BlockSize)
+{
+	int i;
+	for (i = pivot; i < pivot + BlockSize; ++i)
+	{
+		Contiguous.insert(make_pair(fname, i));
+	}
+	pivot = i;
+
+}
+
+void Non_Contiguous_File_Allocation(char fname, int BlockSize)
+{
+	int i;
+	srand(time(0));
+	for (i = 0; i < n; ++i)
+	{
+		int v = rand() % n;
+		if (track[v] == 0)
+		{
+			NonContiguous.insert(make_pair(fname, v));
+			track[v] = 1;
+			BlockSize--;
+		}
+		if (BlockSize == 0) break;
+	}
+}
+
+
+int main(int argc, char const *argv[])
+{
+	int Block_Size,choice;
+
+	printf("Enter Total Number of Blocks : ");
+	scanf("%d", &n);
+
+	Block_Size = n;
+
+	while (1)
+	{
+		printf("\n1. Input File\n2. Search File\n3. Exit\nEnterChoice : ");
+		cin >> choice;
+		if (choice == 1)
+		{
+			char fname;
+			int BlockSize;
+			printf("Enter FileName : ");
+			cin >> fname;
+			printf("Enter BlockSize : ");
+			cin >> BlockSize;
+
+			if (BlockSize <= Block_Size)
+			{
+				Block_Size -= BlockSize;
+				printf("File %c Created\n", fname);
+				Contiguous_File_Allocation(fname, BlockSize);
+				Non_Contiguous_File_Allocation(fname, BlockSize);
+			}
+			else
+				printf("File %c cannot be created (not enough free blocks)\n", fname);
+		}
+		else if (choice == 2)
+		{
+			char fname;
+			printf("Search FileName : ");
+			cin >> fname;
+			if (NonContiguous.count(fname) == 0 && Contiguous.count(fname) == 0) {
+				printf("File Not Found !!\n");
+			} else {
+				Print_Func(fname);
+			}
+		}
+		else if (choice == 3)
+		{
+			break;
+		}
+	}
+  
+	return 0;
+}
