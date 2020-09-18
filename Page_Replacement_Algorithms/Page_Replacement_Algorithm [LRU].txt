@@ -1,7 +1,4 @@
 #include "bits/stdc++.h"
-#define rd freopen("ip.txt","r",stdin)
-#define wr freopen("op.txt", "w", stdout)
-#define wis(x) cout << #x << " ---> " << x << endl;
 using namespace std;
 
 /// LRU
@@ -10,19 +7,19 @@ int pointer;
 int faults;
 
 
-int predict(int reference_length, int references[], int page_no , int frame_size, int frame[], int start)
+int LRU_Algorithm(int reference_array[], int frame_size, int frame[], int start)
 {
-    int pos = -1, farthest = start, i;
+    int pos = -1, LeftMost = start, i;
     for (i = 0; i < frame_size; i++)
     {
         int j;
-        for (j = start - 1; j >= 0; j--)
+        for (j = start; j >= 0; j--)
         {
-            if (frame[i] == references[j])
+            if (frame[i] == reference_array[j])
             {
-                if (j < farthest)
+                if (j < LeftMost)
                 {
-                    farthest = j;
+                    LeftMost = j;
                     pos = i;
                 }
                 break;
@@ -35,7 +32,7 @@ int predict(int reference_length, int references[], int page_no , int frame_size
     return pos;
 }
 
-void add_reference(int frame_size, int frame[], int reference, int current_position, int reference_length, int references[])
+void Check_Faults(int frame_size, int frame[], int reference, int current_position, int reference_length, int reference_array[])
 {
     int i;
     bool allocated = false;
@@ -58,7 +55,7 @@ void add_reference(int frame_size, int frame[], int reference, int current_posit
     }
     if (allocated == false)
     {
-        int j = predict(reference_length, references, current_position, frame_size, frame, current_position + 1);
+        int j = LRU_Algorithm(reference_array, frame_size, frame, current_position - 1);
 
         frame[j] = reference;
         faults++;
@@ -67,7 +64,6 @@ void add_reference(int frame_size, int frame[], int reference, int current_posit
 
 int main()
 {
-    
     int frame_size, i, number_of_references;
     printf("Enter frame size: ");
     scanf("%d", &frame_size);
@@ -81,14 +77,21 @@ int main()
     printf("Enter the number of references: ");
     scanf("%d", &number_of_references);
     printf("\n");
-    int reference[number_of_references];
+    int reference_array[number_of_references];
 
     for (i = 0; i < number_of_references; i++)
     {
-        scanf("%d", &reference[i]);
-        add_reference(frame_size, frame, reference[i], i, number_of_references, reference);
+        scanf("%d", &reference_array[i]);
+        Check_Faults(frame_size, frame, reference_array[i], i, number_of_references, reference_array);
     }
     printf("Number of faults using LRU Page Replacement Algorithm : %d\n", faults);
-    printf("Page Fault Rate : %d", (int)ceil((faults*100*1.0)/number_of_references));
-    cout<<"%"<<endl;
+    printf("Page Fault Rate : %d", (int)ceil((faults * 100 * 1.0) / number_of_references));
+    cout << "%" << endl;
 }
+
+
+/*
+3
+22
+7 0 1 2 0 3 0 4 2 3 0 3 0 3 2 1 2 0 1 7 0 1
+*/
